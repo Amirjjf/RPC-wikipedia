@@ -120,7 +120,7 @@ class ThreadedXMLRPCServer(ThreadingMixIn, SimpleXMLRPCServer):
     pass
 
 def main():
-    global DB_FILE  # Declare global variable at the very start of the function
+    global DB_FILE  
     parser = argparse.ArgumentParser(description="XML-RPC Notebook Server")
     parser.add_argument("--port", type=int, default=8000, help="Port to run the server on")
     parser.add_argument("--db", type=str, default=DB_FILE, help="XML database file")
@@ -131,7 +131,6 @@ def main():
     init_db(DB_FILE)
     server = ThreadedXMLRPCServer(("localhost", args.port), requestHandler=RequestHandler, allow_none=True)
     server.register_introspection_functions()
-    # Use lambda wrappers to pass the current DB_FILE value.
     server.register_function(lambda topic, text, timestamp, search_term="": add_note(topic, text, timestamp, search_term, DB_FILE), "add_note")
     server.register_function(lambda topic: get_notes(topic, DB_FILE), "get_notes")
     
